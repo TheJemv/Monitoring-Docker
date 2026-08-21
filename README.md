@@ -1,8 +1,9 @@
-# Server stack
+# Monitoring — Server Stack
 
-This folder is the whole server side of [Monitoring](../README.md): a
-docker-compose stack with Prometheus, node-exporter, cAdvisor, Portainer,
-and an optional Cloudflare Tunnel. This is what the app connects to.
+This is the whole server side of the
+[Monitoring](https://github.com/TheJemv/Monitoring) app: a docker-compose
+stack with Prometheus, node-exporter, cAdvisor, Portainer, and an optional
+Cloudflare Tunnel. This is what the app connects to.
 
 | File | What it's for |
 | --- | --- |
@@ -16,18 +17,12 @@ and an optional Cloudflare Tunnel. This is what the app connects to.
   `docker compose` plugin — a home server, a mini PC, a VPS, anywhere Docker
   runs.
 
-## 1. Get this folder onto your server
-
-Cloning the full repo also gets you the app's source, but on the server you
-only ever work inside `docker/`:
+## 1. Get this onto your server
 
 ```bash
-git clone https://github.com/TheJemv/Monitoring.git
-cd Monitoring/docker
+git clone https://github.com/TheJemv/Monitoring-Docker.git
+cd Monitoring-Docker
 ```
-
-Everything from here on (`.env`, `docker compose up`, …) happens in this
-`docker/` directory.
 
 ## 2. Set up your `.env`
 
@@ -63,11 +58,11 @@ docker compose ps
 ### Matching it to your hardware
 
 Adjust [`prometheus.yml`](prometheus.yml) if you rename services or add more
-scrape targets. Back in the app's source, check `SSD_MOUNTPOINT`/
-`HDD_MOUNTPOINT` in
-[`../src/screens/prometheus/hooks/use-prometheus-overview.ts`](../src/screens/prometheus/hooks/use-prometheus-overview.ts)
+scrape targets. In the [Monitoring app's source](https://github.com/TheJemv/Monitoring),
+check `SSD_MOUNTPOINT`/`HDD_MOUNTPOINT` in
+[`src/screens/prometheus/hooks/use-prometheus-overview.ts`](https://github.com/TheJemv/Monitoring/blob/main/src/screens/prometheus/hooks/use-prometheus-overview.ts)
 and `MEMORY_TOTAL_GIB` in
-[`../src/screens/prometheus/prometheus.constants.ts`](../src/screens/prometheus/prometheus.constants.ts)
+[`src/screens/prometheus/prometheus.constants.ts`](https://github.com/TheJemv/Monitoring/blob/main/src/screens/prometheus/prometheus.constants.ts)
 to match your server.
 
 ## Exposing it to the internet
@@ -96,10 +91,12 @@ so it needs an access token:
 3. Confirm your Portainer *environment* id with `GET /api/endpoints`
    (Portainer usually calls the local one `1` on a fresh install, but check
    — it isn't always). If yours isn't `1`, update `PORTAINER_ENDPOINT_ID` in
-   [`../src/api/portainer/constants.ts`](../src/api/portainer/constants.ts).
+   [`src/api/portainer/constants.ts`](https://github.com/TheJemv/Monitoring/blob/main/src/api/portainer/constants.ts)
+   in the app's source.
 
 ## Next: configure the app
 
 Once the stack is running, open the Monitoring app → **Configuration** tab,
 and enter your server host, service URLs, and the Portainer URL/token from
-above. See the [main README](../README.md) for running the app itself.
+above. See the [main repo](https://github.com/TheJemv/Monitoring) for more
+about the app itself.
