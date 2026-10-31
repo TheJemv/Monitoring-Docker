@@ -34,7 +34,7 @@ This brings up, each bound to the host on the port shown:
 
 - **Prometheus** on port `9090` — collects and stores the metrics.
 - **node-exporter** on port `9100` — host-level metrics (CPU, RAM, disks, temperature).
-- **cAdvisor** on port `8080` — per-container CPU/RAM metrics.
+- **cAdvisor** on port `8081` — per-container CPU/RAM metrics.
 - **Portainer** on ports `9000` (HTTP) and `9443` (HTTPS) — the Docker API the app talks to for the Docker tab.
 
 Check everything's up with:
