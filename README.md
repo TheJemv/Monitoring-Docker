@@ -2,14 +2,14 @@
 
 This is the whole server side of the
 [Monitoring](https://github.com/TheJemv/Monitoring) app: a docker-compose
-stack with Prometheus, node-exporter, cAdvisor, Portainer, and an optional
-Cloudflare Tunnel. This is what the app connects to.
+stack with Prometheus, node-exporter, cAdvisor, and Portainer, each exposed
+on your network so you can reach them directly (through your own router
+port-forwarding and VPN setup).
 
 | File | What it's for |
 | --- | --- |
-| [`docker-compose.yml`](docker-compose.yml) | Prometheus, node-exporter, cAdvisor, Portainer, and the optional Cloudflare Tunnel container |
+| [`docker-compose.yml`](docker-compose.yml) | Prometheus, node-exporter, cAdvisor, and Portainer |
 | [`prometheus.yml`](prometheus.yml) | Prometheus scrape config — already points at the other containers by their compose service name |
-| [`.env.example`](.env.example) | Template for the one secret the compose file needs (your Cloudflare Tunnel token) |
 
 ## Requirements
 
@@ -24,30 +24,18 @@ git clone https://github.com/TheJemv/Monitoring-Docker.git
 cd Monitoring-Docker
 ```
 
-## 2. Set up your `.env`
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and paste your Cloudflare Tunnel token if you're using one (see
-[Exposing it to the internet](#exposing-it-to-the-internet) below). If
-you're not exposing the stack through Cloudflare, leave it empty and remove
-the `cloudflared` service from `docker-compose.yml`.
-
-## 3. Start the stack
+## 2. Start the stack
 
 ```bash
 docker compose up -d
 ```
 
-This brings up:
+This brings up, each bound to the host on the port shown:
 
 - **Prometheus** on port `9090` — collects and stores the metrics.
 - **node-exporter** on port `9100` — host-level metrics (CPU, RAM, disks, temperature).
 - **cAdvisor** on port `8080` — per-container CPU/RAM metrics.
-- **Portainer** on port `9000` — the Docker API the app talks to for the Docker tab.
-- **cloudflared** *(optional)* — exposes the stack through a Cloudflare Tunnel instead of opening ports on your router.
+- **Portainer** on ports `9000` (HTTP) and `9443` (HTTPS) — the Docker API the app talks to for the Docker tab.
 
 Check everything's up with:
 
@@ -67,19 +55,10 @@ to match your server.
 
 ## Exposing it to the internet
 
-Each service above only listens on your server. To reach it from the app
-while you're away from home, either:
-
-- **Cloudflare Tunnel** (recommended, no open ports): create a tunnel in the
-  [Zero Trust dashboard](https://one.dash.cloudflare.com) → *Networks* →
-  *Tunnels*, add a public hostname per service (e.g.
-  `prometheus.yourdomain.com` → `http://prometheus:9090`,
-  `cadvisor.yourdomain.com` → `http://cadvisor:8080`, etc. — use the
-  container names from `docker-compose.yml` as the hostname, since
-  `cloudflared` reaches them over the same Docker network), then put the
-  tunnel token in `.env` here.
-- **Reverse proxy** (Caddy, Traefik, nginx) with your own TLS certs and DNS.
-- **Plain IP + port**, if you only need this on your local network.
+Each service above binds directly to the host on its own port (see the list
+above). To reach them while you're away from home, forward those ports on
+your router to this machine and connect in over your own VPN — no tunnel or
+reverse proxy container is needed for that.
 
 ## Setting up Portainer's access token
 
